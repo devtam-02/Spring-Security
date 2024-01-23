@@ -23,16 +23,21 @@ import org.springframework.security.web.SecurityFilterChain;
 @Configuration
 @EnableWebSecurity
 public class SecurityConfiguration{
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests((authorize) -> authorize
-                        .requestMatchers("/login").permitAll()
+                        .requestMatchers("/login","/users","/css/**").permitAll()
                         .anyRequest().authenticated()
-                );
+                )
+//                .formLogin(Customizer.withDefaults());
+                .formLogin(form -> form.loginPage("/login"));
 
         return http.build();
     }
+
+
 
     @Bean
     public AuthenticationManager authenticationManager(
@@ -48,8 +53,8 @@ public class SecurityConfiguration{
     @Bean
     public UserDetailsService userDetailsService() {
         UserDetails userDetails = User.withDefaultPasswordEncoder()
-                .username("user")
-                .password("password")
+                .username("devtam@gmail.com")
+                .password("Dev22x22")
                 .roles("USER")
                 .build();
 
@@ -58,7 +63,7 @@ public class SecurityConfiguration{
 
     @Bean
     public PasswordEncoder passwordEncoder() {
-        return PasswordEncoderFactories.createDelegatingPasswordEncoder();
+        return new BCryptPasswordEncoder();
     }
 
 }
