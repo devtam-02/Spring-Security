@@ -8,13 +8,17 @@ import org.springframework.web.bind.annotation.PostMapping;
 @Controller
 public class AuthenController {
     @GetMapping("/login")
-    public String home(){
+    public String loginPage(){
         return "login";
     }
 
     @PostMapping("/login")
     public String login(@ModelAttribute("email") String email, @ModelAttribute("password") String password){
         System.out.println("Email: " + email + "\nPassword: " + password);
+        return "index";
+    }
+    @GetMapping("/home")
+    public String home(){
         return "index";
     }
 }
