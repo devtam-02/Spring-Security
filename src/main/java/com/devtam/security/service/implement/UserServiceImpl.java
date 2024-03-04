@@ -26,4 +26,15 @@ public class UserServiceImpl implements UserService {
         }
 
     }
+    @Override
+    public User getUserByEmail(String email) {
+        try {
+            User user = userRepository.findUserByEmail(email);
+            return user;
+        }
+        catch (NullPointerException e){
+            System.err.println(e.getMessage());
+            return null;
+        }
+    }
 }

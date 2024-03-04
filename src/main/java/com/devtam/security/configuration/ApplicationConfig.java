@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -17,6 +18,8 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 public class ApplicationConfig implements WebMvcConfigurer {
     @Autowired
     UserRepository userRepository;
+
+    BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
@@ -32,7 +35,7 @@ public class ApplicationConfig implements WebMvcConfigurer {
                     .id(1L)
                     .email("nguyentrongtam2x2@gmail.com")
                     .name("Nguyen Trong Tu Tam")
-                    .password("123456")
+                    .password(bCryptPasswordEncoder.encode("123456"))
                     .phoneNumber("0565459651")
                     .role(RoleConstant.ROOT.getValue())
                     .build();
@@ -40,7 +43,7 @@ public class ApplicationConfig implements WebMvcConfigurer {
                     .id(2L)
                     .email("namancut@gmail.com")
                     .name("Hoang Duc Nam")
-                    .password("123456")
+                    .password(bCryptPasswordEncoder.encode("123456"))
                     .phoneNumber("0435253233")
                     .role(RoleConstant.ROOT.getValue())
                     .build();

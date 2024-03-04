@@ -21,4 +21,9 @@ public class AuthenController {
     public String home(){
         return "index";
     }
+
+    @GetMapping("/403")
+    public String error(){
+        return "<h1> Error 403 kakakakakaakakakakaka </h1>";
+    }
 }

@@ -8,4 +8,5 @@ import org.springframework.stereotype.Service;
 @Service
 public interface UserService {
     public ResponseEntity<User> getUserById(Long id);
+    public User getUserByEmail(String email);
 }
