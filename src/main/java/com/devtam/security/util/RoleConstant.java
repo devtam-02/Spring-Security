@@ -4,7 +4,7 @@ public enum RoleConstant {
     ROOT(0),
     USER(1),
     ADMIN(2);
-    private static final String[] ROLES_TYPE_NAMING = new String[]{"root","user","admin"};
+    private static final String[] ROLES_TYPE_NAMING = new String[]{"ROOT","USER","ADMIN"};
     private final int value;
 
 
@@ -26,10 +26,15 @@ public enum RoleConstant {
         return getObjectName(this.value);
     }
     public static String getObjectName(int value) throws Exception {
-        if (value < ROLES_TYPE_NAMING.length) {
-            return ROLES_TYPE_NAMING[value];
-        } else {
+        try {
+            if (value < ROLES_TYPE_NAMING.length) {
+                return ROLES_TYPE_NAMING[value];
+            } else {
+                throw new Exception(String.format("The value {%s} is not exist", value));
+            }
+        }catch (Exception e){
             throw new Exception(String.format("The value {%s} is not exist", value));
         }
+
     }
 }

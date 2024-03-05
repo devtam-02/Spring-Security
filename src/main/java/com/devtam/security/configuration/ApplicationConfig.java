@@ -37,7 +37,7 @@ public class ApplicationConfig implements WebMvcConfigurer {
                     .name("Nguyen Trong Tu Tam")
                     .password(bCryptPasswordEncoder.encode("123456"))
                     .phoneNumber("0565459651")
-                    .role(RoleConstant.ROOT.getValue())
+                    .role(RoleConstant.ADMIN.getValue())
                     .build();
             User new2 = User.builder()
                     .id(2L)
@@ -45,7 +45,7 @@ public class ApplicationConfig implements WebMvcConfigurer {
                     .name("Hoang Duc Nam")
                     .password(bCryptPasswordEncoder.encode("123456"))
                     .phoneNumber("0435253233")
-                    .role(RoleConstant.ROOT.getValue())
+                    .role(RoleConstant.USER.getValue())
                     .build();
 
             saveUser(new1);

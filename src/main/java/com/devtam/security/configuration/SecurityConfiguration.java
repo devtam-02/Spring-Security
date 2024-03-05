@@ -11,6 +11,7 @@ import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.authorization.AuthenticatedAuthorizationManager;
 import org.springframework.security.config.Customizer;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.core.userdetails.User;
@@ -31,7 +32,8 @@ import javax.sql.DataSource;
 public class SecurityConfiguration{
     @Autowired
     UserService userService;
-
+    @Autowired
+    UserDetailsService userDetailsService;
     @Autowired
     DataSource dataSource;
     @Bean
@@ -40,7 +42,7 @@ public class SecurityConfiguration{
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers("/login", "/logout","/css/**").permitAll()
                         .requestMatchers("/users").hasAnyRole("ADMIN", "USER")
-                        .requestMatchers("/admin/*").hasRole("ADMIN")
+                        .requestMatchers("/admin/*", "/admin").hasRole("ADMIN")
                         .anyRequest().authenticated()
                 )
                 .formLogin(Customizer.withDefaults())
@@ -53,16 +55,22 @@ public class SecurityConfiguration{
 //                )
                 .logout(logout -> logout
                         .logoutUrl("/logout")
-                        .logoutSuccessUrl("/logoutSuccessful")
+                        .logoutSuccessUrl("/logout?successful")
                 )
                 .rememberMe(rememberMe -> rememberMe
                         .tokenRepository(persistentTokenRepository())
                         .tokenValiditySeconds(1 * 24 * 60 * 60))
                 .exceptionHandling(e -> e
                         .accessDeniedHandler((httpServletRequest, httpServletResponse, e1) -> {
-                            httpServletResponse.sendRedirect("/403");
+                            httpServletResponse.sendRedirect("/access-denied");
                         }));
         return http.build();
+    }
+    @Autowired
+    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+        // Set your configuration on the auth object
+//        auth.jdbcAuthentication().dataSource(dataSource);
+//                .usersByUsernameQuery("select email, password from tbl_user where email = ?");
     }
 
     @Bean
@@ -72,26 +80,11 @@ public class SecurityConfiguration{
         DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider();
         authenticationProvider.setUserDetailsService(userDetailsService);
         authenticationProvider.setPasswordEncoder(passwordEncoder);
-
         return new ProviderManager(authenticationProvider);
     }
 
     @Bean
-    public UserDetailsService userDetailsService() {
-    com.devtam.security.entity.User user = userService.getUserByEmail("tres");
-        UserDetails userDetails = User.builder()
-                .username("devtam")
-                .password(passwordEncoder().encode("Dev22x22"))
-                .roles("USER")
-                .build();
-        JdbcUserDetailsManager jdbcUserDetailsManager = new JdbcUserDetailsManager(dataSource);
-        return jdbcUserDetailsManager;
-//        return new InMemoryUserDetailsManager(userDetails);
-    }
-
-    @Bean
     public PasswordEncoder passwordEncoder() {
-//        return new BCryptPasswordEncoder();
         BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
         return bCryptPasswordEncoder;
     }
@@ -100,7 +93,6 @@ public class SecurityConfiguration{
     public JdbcTokenRepositoryImpl persistentTokenRepository() {
         JdbcTokenRepositoryImpl memory = new JdbcTokenRepositoryImpl();
         memory.setDataSource(dataSource);
-        memory.setCreateTableOnStartup(true);
         System.err.println(memory.getDataSource());
         return memory;
     }

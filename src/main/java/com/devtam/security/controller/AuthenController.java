@@ -1,5 +1,6 @@
 package com.devtam.security.controller;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -23,7 +24,7 @@ public class AuthenController {
     }
 
     @GetMapping("/403")
-    public String error(){
-        return "<h1> Error 403 kakakakakaakakakakaka </h1>";
+    public ResponseEntity<?> error(){
+        return ResponseEntity.ok("Access Denied");
     }
 }
