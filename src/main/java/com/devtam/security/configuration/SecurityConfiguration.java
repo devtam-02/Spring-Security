@@ -41,8 +41,8 @@ public class SecurityConfiguration{
         http
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers("/login", "/logout","/css/**").permitAll()
-                        .requestMatchers("/users").hasAnyRole("ADMIN", "USER")
-                        .requestMatchers("/admin/*", "/admin").hasRole("ADMIN")
+                        .requestMatchers("/users").hasAuthority("USER")
+                        .requestMatchers("/admin/*", "/admin").hasAuthority("ADMIN")
                         .anyRequest().authenticated()
                 )
                 .formLogin(Customizer.withDefaults())
@@ -55,7 +55,7 @@ public class SecurityConfiguration{
 //                )
                 .logout(logout -> logout
                         .logoutUrl("/logout")
-                        .logoutSuccessUrl("/logout?successful")
+//                        .logoutSuccessUrl("/logout?successful")
                 )
                 .rememberMe(rememberMe -> rememberMe
                         .tokenRepository(persistentTokenRepository())
